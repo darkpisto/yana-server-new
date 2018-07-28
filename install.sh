@@ -1,7 +1,8 @@
 #!/bin/bash
 # Auteur : Remi Sarrailh (maditnerd)
+# Updates : Modifications mineures par Valentin CARRUESCO Idleman 28/07/2018
 # Licence : MIT
-# Un probleme : https://github.com/ldleman/yana-server/issues
+# Un probleme : https://git.idleman.fr/idleman/yana-server/issues
 # https://tldrlegal.com/license/mit-license
 
 #############
@@ -88,7 +89,7 @@ Ceci sera fait au prochain redémarrage.
 # Message d'erreurs
 
 noInternetMessage="\
-Je n'arrive pas à me connecter à github.com \n\
+Je n'arrive pas à me connecter à git.idleman.fr \n\
 Voici votre adresse IP: $IPADDRESS\
 "
 
@@ -126,8 +127,8 @@ Voici le message d'erreur:\n\
 
 gitErrorMessage="\
 Impossible de récupérer le code source avec git\n\
-Cela peut être du à un problème du coté de github\n\
-Vous pouvez vérifier cela sur https://status.github.com/\n\n\
+Cela peut être du à un problème du coté de git.idleman.fr\n\
+Veuillez vérifier que http://git.idleman.fr/ est en ligne\n\n\
 Voici le message d'erreur:\n\
 "
 
@@ -419,7 +420,7 @@ verifyRoot() {
 
 #Vérifie l'état de la connexion internet
 checkInternet(){
-	ping -c1 www.github.com > /dev/null 2>&1 && internet=1 || internet=0
+	ping -c1 www.google.com > /dev/null 2>&1 && internet=1 || internet=0
 	echo -e "$OK -----> Vérification de la connexion à internet $NORMAL"
 	if [[ $internet -eq 0 ]]
 		then
@@ -615,7 +616,7 @@ cloneYana(){
 				if(whiptail --title "Yana déjà installé" --yesno "$yanaMessage" --yes-button "Oui" --no-button "Non" 0 0) then
 					echo -e "$ERR -----> Réinstallation de Yana Server $NORMAL"
 					rm -rf /var/www/yana-server
-					git clone https://github.com/ldleman/yana-server.git /var/www/yana-server > /tmp/gitError.log 2>&1
+					git clone https://git.idleman.fr/idleman/yana-server.git /var/www/yana-server > /tmp/gitError.log 2>&1
 					globalError=$?
 					if [[ $globalError -ne 0 ]];then
 						gitErrorMenu
@@ -623,7 +624,7 @@ cloneYana(){
 				fi
 		else
 			echo -e "$OK -----> Copie de Yana Server $NORMAL"
-			git clone https://github.com/ldleman/yana-server.git /var/www/yana-server > /tmp/gitError.log 2>&1
+			git clone https://git.idleman.fr/idleman/yana-server.git /var/www/yana-server > /tmp/gitError.log 2>&1
 			globalError=$?
 			if [[ $globalError -ne 0 ]];then
 				gitErrorMenu
@@ -1071,7 +1072,7 @@ if [[ $isRoot -eq 1 ]];then
 			# Renommer le Raspberry Pi
 			renameMenu
 
-			# Vérifier si github.com est accessible
+			# Vérifier si git.idleman.fr est accessible
 			checkInternet
 			if [[ $internet -eq 1 ]];then
 
