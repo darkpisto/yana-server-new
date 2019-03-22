@@ -616,7 +616,7 @@ cloneYana(){
 				if(whiptail --title "Yana déjà installé" --yesno "$yanaMessage" --yes-button "Oui" --no-button "Non" 0 0) then
 					echo -e "$ERR -----> Réinstallation de Yana Server $NORMAL"
 					rm -rf /var/www/yana-server
-					git clone https://git.idleman.fr/idleman/yana-server.git /var/www/yana-server > /tmp/gitError.log 2>&1
+					GIT_SSL_NO_VERIFY=true git clone https://git.idleman.fr/idleman/yana-server.git /var/www/yana-server > /tmp/gitError.log 2>&1
 					globalError=$?
 					if [[ $globalError -ne 0 ]];then
 						gitErrorMenu
@@ -624,7 +624,7 @@ cloneYana(){
 				fi
 		else
 			echo -e "$OK -----> Copie de Yana Server $NORMAL"
-			git clone https://git.idleman.fr/idleman/yana-server.git /var/www/yana-server > /tmp/gitError.log 2>&1
+			GIT_SSL_NO_VERIFY=true git clone https://git.idleman.fr/idleman/yana-server.git /var/www/yana-server > /tmp/gitError.log 2>&1
 			globalError=$?
 			if [[ $globalError -ne 0 ]];then
 				gitErrorMenu
