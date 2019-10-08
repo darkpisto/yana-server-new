@@ -312,12 +312,11 @@ else
 	break;
 
 
-
 	case 'installPlugin':
 		try{
 			if($myUser==false) throw new Exception('Vous devez vous connecter pour cette action.');
 
-			$tempZipName = 'plugins/'.md5(microtime());
+			$tempZipName = 'plugins'.SLASH.md5(microtime());
 			echo '<br/>Téléchargement du plugin...';
 			file_put_contents($tempZipName,file_get_contents(urldecode($_['zip'])));
 			if(!file_exists($tempZipName)) throw new Exception("Echec du téléchargement");
@@ -330,24 +329,37 @@ else
 				$zip->extractTo($tempZipFolder);
 				$zip->close();
 				echo '<br/>Plugin extrait '.$tempZipFolder.' <span class="label label-success">OK</span>';
-				$pluginName = glob($tempZipFolder.'/*.plugin*.php');
-				if(count($pluginName)==0)throw new Exception("Plugin invalide, fichier principal manquant");
-					$pluginName = str_replace(array($tempZipFolder.'/','.enabled','.disabled','.plugin','.php'),'',$pluginName[0]);
-					if(file_exists('plugins/'.$pluginName)){
-						echo '<br/>Plugin déjà installé, il sera écrasé par la derniere version <span class="label label-info">OK</span>';
-						Functions::rmFullDir('plugins/'.$pluginName);
-					}
+				
 
-					echo '<br/>Renommage...';
-			
-					if(rename($tempZipFolder,'plugins/'.$pluginName)){
-						echo '<br/>Plugin installé, <span class="label label-info">pensez à l\'activer</span>';
-					}else{
-						Functions::rmFullDir($tempZipFolder);
-						echo '<br/>Impossible de renommer le plugin <span class="label label-error">Erreur</span>';
-					}
+				$i = 0;
+				$pluginName = array();
+				while(count($pluginName)==0 && $i<10){
+					$pluginName = glob($tempZipFolder.SLASH.(  str_repeat('*'.SLASH, $i)   ).'*.plugin*.php');
+					$i++;
+				}
+				
+						
+				if(count($pluginName)==0) throw new Exception("Plugin invalide, fichier principal manquant");
 
-					 unlink($tempZipName);
+				$pluginName = str_replace(array($tempZipFolder.'/','.enabled','.disabled','.plugin','.php'),'',$pluginName[0]);
+				
+				$finalPath = __DIR__.SLASH.'plugins'.SLASH.basename(dirname($pluginName));	
+				if(file_exists($finalPath)){
+					echo '<br/>Plugin déjà installé, il sera écrasé par la derniere version <span class="label label-info">OK</span>';
+					Functions::rmFullDir($finalPath);
+				}
+
+				echo '<br/>Renommage...';
+		
+				if(rename(__DIR__.SLASH.dirname($pluginName),$finalPath )){
+					echo '<br/>Plugin installé, <span class="label label-info">pensez à l\'activer</span>';
+				}else{
+					//Functions::rmFullDir(__DIR__.SLASH.$tempZipFolder);
+					echo '<br/>Impossible de renommer le plugin '.__DIR__.SLASH.$tempZipFolder.' <span class="label label-error">Erreur</span>';
+				}
+
+				unlink($tempZipName);
+				if(file_exists($tempZipFolder)) Functions::rmFullDir($tempZipFolder);
 			
 		}catch(Exception $e){
 			if($tempZipFolder!=null && file_exists($tempZipFolder)) Functions::rmFullDir($tempZipFolder);
